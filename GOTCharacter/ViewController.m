@@ -78,25 +78,37 @@
 
 - (void)writeToPlist:(NSMutableArray *)data
 {
+    NSFileManager *fileManager = [NSFileManager defaultManager];
     NSArray *pathToSave = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *pathToFolder = [pathToSave objectAtIndex:0];
-    NSString *filePath = [pathToFolder stringByAppendingFormat:@"favorite.plist"];
+    NSString *pathToFolder = [pathToSave lastObject];
+    NSString *filePath = [pathToFolder stringByAppendingFormat:@"/favorite.plist"];
     
-    [data writeToFile:filePath atomically:YES];
+    if (![fileManager fileExistsAtPath:filePath])
+    {
+        NSString *source = [[NSBundle mainBundle] pathForResource:@"favorite" ofType:@"plist"];
+        [fileManager copyItemAtPath:source toPath:filePath error:nil];
+    }
+    
+    if ([fileManager fileExistsAtPath:filePath])
+    {
+        [data writeToFile:filePath atomically:YES];
+    }
+    else
+    {
+        NSLog(@"Something go wrong...");
+    }
 }
 
 - (NSMutableArray *)readFromPlist
 {
+    NSFileManager *fileManager = [NSFileManager defaultManager];
     NSArray *pathToSave = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *pathToFolder = [pathToSave objectAtIndex:0];
-    NSString *filePath = [pathToFolder stringByAppendingFormat:@"favorite.plist"];
+    NSString *filePath = [pathToFolder stringByAppendingFormat:@"/favorite.plist"];
     
-    BOOL fileExist = [[NSFileManager defaultManager] fileExistsAtPath:filePath];
-    
-    if (fileExist)
+    if ([fileManager fileExistsAtPath:filePath])
     {
         NSMutableArray *arr = [[NSMutableArray alloc] initWithContentsOfFile:filePath];
-        NSLog(@"File exist... :)");
         return arr;
     }
     else
@@ -110,7 +122,7 @@
 
 - (IBAction)favorite:(UIButton *)sender
 {
-    NSLog(@"Favorite");
+    [self writeToPlist:arrayOfFavs];
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     self.favoriteView = [storyboard instantiateViewControllerWithIdentifier:@"favoriteView"];
     [self presentViewController:self.favoriteView animated:YES completion:nil];
@@ -120,30 +132,25 @@
 {
     CGPoint touchPoint = [sender convertPoint:CGPointZero toView:self.listTableView];
     NSIndexPath *buttonInIndexPath = [self.listTableView indexPathForRowAtPoint:touchPoint];
-    NSLog(@"index path.row : %d", buttonInIndexPath.row);
     CustomTableViewCell *cell = [self.listTableView cellForRowAtIndexPath:buttonInIndexPath];
 
-    if (sender.selected)
+    if (!sender.selected)
+    {
+        sender.selected = YES;
+        [arrayOfFavs addObject:cell.titleLabel.text];
+    }
+    else
     {
         sender.selected = NO;
+        
         for (int i = 0; i < arrayOfFavs.count; i++)
         {
             if ([cell.titleLabel.text isEqualToString:[arrayOfFavs objectAtIndex:i]])
             {
                 [arrayOfFavs removeObjectAtIndex:i];
-                [self writeToPlist:arrayOfFavs];
             }
         }
     }
-    else
-    {
-        sender.selected = YES;
-        NSLog(@"title add to fav: %@",cell.titleLabel.text);
-        [arrayOfFavs addObject:cell.titleLabel.text];
-        [self writeToPlist:arrayOfFavs];
-    }
-    
-    NSLog(@"Fav: %@", arrayOfFavs);
 }
 
 
@@ -172,6 +179,14 @@
 }
 
 // #MARK: TableView
+
+
+- (void)refreshTableView //NSNotificationCenter
+{
+    arrayOfFavs = [self readFromPlist];
+    [self.listTableView reloadData];
+}
+
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
@@ -211,23 +226,32 @@
     cell.descriptionLabel.numberOfLines = 2;
     cell.descriptionLabel.text = description;
     
-   
     cell.addFavButton.tag = indexPath.row;
     [cell.addFavButton addTarget:self action:@selector(addToFav:) forControlEvents:UIControlEventTouchUpInside];
 
-    //NSMutableArray *arr = [self readFromPlist];
-    //NSLog(@"arr: %@", arr);
-    //arrayOfFavs = [self readFromPlist];
     
-    if (arrayOfFavs > 0)
+    
+    if (arrayOfFavs.count > 0)
     {
-        for (int i = 0; i<arrayOfFavs.count; i++)
+        NSMutableArray *tempArray = [[NSMutableArray alloc] initWithArray:arrayOfFavs];
+        
+        for (int i = 0; i < tempArray.count; i++)
         {
-            if ([cell.titleLabel.text isEqualToString:[arrayOfFavs objectAtIndex:i]])
+            if ([cell.titleLabel.text isEqualToString:[tempArray objectAtIndex:i]])
             {
                 cell.addFavButton.selected = YES;
+                [tempArray removeObjectAtIndex:i];
+                break;
+            }
+            else
+            {
+                cell.addFavButton.selected = NO;
             }
         }
+    }
+    else
+    {
+        cell.addFavButton.selected = NO;
     }
     
     UILongPressGestureRecognizer *lpgr = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
@@ -291,10 +315,13 @@
 {
     [super viewDidLoad];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshTableView) name:@"updateTable" object:nil];
+    
     arrayOfLists = [NSMutableArray new]; // init
     arrayOfFavs = [NSMutableArray new];
     
     [self fetchDataFromURL];
+    arrayOfFavs = [self readFromPlist];
 }
 
 - (void)didReceiveMemoryWarning {

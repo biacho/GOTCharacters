@@ -15,6 +15,7 @@
 		6D1F56A01D5510A9005E4019 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6D1F569F1D5510A9005E4019 /* Assets.xcassets */; };
 		6D1F56A31D5510A9005E4019 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6D1F56A11D5510A9005E4019 /* LaunchScreen.storyboard */; };
 		6D2829281D56C32F006CBB4B /* FavoriteTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6D2829271D56C32F006CBB4B /* FavoriteTableViewController.m */; };
+		6D28292A1D578678006CBB4B /* favorite.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6D2829291D578678006CBB4B /* favorite.plist */; };
 		6D2BD1251D569212007204DB /* fav_emp.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D2BD1231D569212007204DB /* fav_emp.png */; };
 		6D2BD1261D569212007204DB /* fav_fill.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D2BD1241D569212007204DB /* fav_fill.png */; };
 		6D2BD1291D569ECA007204DB /* add_fill.png in Resources */ = {isa = PBXBuildFile; fileRef = 6D2BD1271D569ECA007204DB /* add_fill.png */; };
@@ -43,6 +44,7 @@
 		6D1F56A41D5510A9005E4019 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6D2829261D56C32F006CBB4B /* FavoriteTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FavoriteTableViewController.h; sourceTree = "<group>"; };
 		6D2829271D56C32F006CBB4B /* FavoriteTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FavoriteTableViewController.m; sourceTree = "<group>"; };
+		6D2829291D578678006CBB4B /* favorite.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = favorite.plist; sourceTree = "<group>"; };
 		6D2BD1231D569212007204DB /* fav_emp.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fav_emp.png; sourceTree = "<group>"; };
 		6D2BD1241D569212007204DB /* fav_fill.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fav_fill.png; sourceTree = "<group>"; };
 		6D2BD1271D569ECA007204DB /* add_fill.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = add_fill.png; sourceTree = "<group>"; };
@@ -107,6 +109,7 @@
 				6D1F56931D5510A9005E4019 /* AppDelegate.h */,
 				6D1F56941D5510A9005E4019 /* AppDelegate.m */,
 				6D1F56911D5510A9005E4019 /* main.m */,
+				6D2829291D578678006CBB4B /* favorite.plist */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -191,7 +194,6 @@
 				TargetAttributes = {
 					6D1F568C1D5510A9005E4019 = {
 						CreatedOnToolsVersion = 7.3.1;
-						DevelopmentTeam = SX2A429E4N;
 					};
 				};
 			};
@@ -228,6 +230,7 @@
 				6D358D3B1D558338008A08B5 /* backroudn.jpg in Resources */,
 				6D2BD1261D569212007204DB /* fav_fill.png in Resources */,
 				6D2BD1251D569212007204DB /* fav_emp.png in Resources */,
+				6D28292A1D578678006CBB4B /* favorite.plist in Resources */,
 				6D2BD1291D569ECA007204DB /* add_fill.png in Resources */,
 				6D1F569B1D5510A9005E4019 /* Main.storyboard in Resources */,
 			);
